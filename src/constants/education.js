@@ -23,7 +23,7 @@ export const educationHistory = [
         ],
     },
     {
-        qualification: 'Higher Secondary',
+        degree: 'Higher Secondary',
         institution: 'NSBHSS Mannar',
         period: '2018 - 2020',
         description: 'Excelled in science subjects while laying the foundation for computer science fundamentals.',

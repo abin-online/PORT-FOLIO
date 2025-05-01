@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { technicalSkills, tools } from '../constants/skills';
 
 const Skills = ({ darkMode }) => {
     const [activeTab, setActiveTab] = useState('technical');
-    // State for mouse position to create 3D tilt effect
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
+    const [isVisible, setIsVisible] = useState(false);
+    const skillsContainerRef = useRef(null);
+    
     // Pentagon SVG path generator
     const createPentagonPath = (size) => {
         const radius = size / 2;
@@ -32,21 +33,79 @@ const Skills = ({ darkMode }) => {
         };
     }, []);
 
+    // Use effect for intersection observer to trigger animations when scrolled into view
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    setIsVisible(true);
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (skillsContainerRef.current) {
+            observer.observe(skillsContainerRef.current);
+        }
+
+        return () => {
+            if (skillsContainerRef.current) {
+                observer.unobserve(skillsContainerRef.current);
+            }
+        };
+    }, [activeTab]);
+
+    // Function to determine entrance direction based on index
+    const getAnimationDirection = (index) => {
+        // Create a pattern of directions based on position in the grid
+        const position = index % 4;
+        switch (position) {
+            case 0: return 'translate-x-full opacity-0'; // From right
+            case 1: return '-translate-y-full opacity-0'; // From top
+            case 2: return '-translate-x-full opacity-0'; // From left
+            case 3: return 'translate-y-full opacity-0';  // From bottom
+            default: return 'opacity-0';
+        }
+    };
+
+    // Calculate delay for staggered animation
+    const getAnimationDelay = (index) => {
+        return `${100 + (index * 75)}ms`;
+    };
+
     return (
         <div className={`py-20 ${darkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black' : 'bg-gradient-to-br from-white via-blue-50 to-white'} backdrop-blur-md`}>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <h2 
+                        className={`text-3xl md:text-4xl font-bold mb-4 ${
+                            darkMode ? 'text-white' : 'text-gray-900'
+                        } transform transition-all duration-700 ${
+                            isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'
+                        }`}
+                    >
                         My <span className={darkMode ? 'text-blue-400' : 'text-blue-600'}>Skills</span>
                     </h2>
-                    <div className={`w-24 h-1 mx-auto rounded ${darkMode ? 'bg-blue-500' : 'bg-blue-600'}`}></div>
-                    <p className={`mt-6 max-w-2xl mx-auto text-lg ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div 
+                        className={`w-24 h-1 mx-auto rounded transition-all duration-700 delay-300 transform ${
+                            isVisible ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
+                        } ${darkMode ? 'bg-blue-500' : 'bg-blue-600'}`}
+                    ></div>
+                    <p 
+                        className={`mt-6 max-w-2xl mx-auto text-lg transition-all duration-700 delay-500 transform ${
+                            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                        } ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
+                    >
                         A comprehensive overview of my technical capabilities and tools I work with.
                     </p>
                 </div>
 
                 {/* Skills Tabs */}
-                <div className="flex justify-center mb-12">
+                <div 
+                    className={`flex justify-center mb-12 transition-all duration-700 delay-700 transform ${
+                        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                    }`}
+                >
                     <div className={`inline-flex rounded-lg p-1 ${darkMode ? 'bg-gray-800 bg-opacity-50' : 'bg-gray-200 bg-opacity-70'} shadow-lg`}>
                         <button
                             onClick={() => setActiveTab('technical')}
@@ -70,15 +129,26 @@ const Skills = ({ darkMode }) => {
                 </div>
 
                 {/* Skills Grid */}
-                <div className={`grid gap-6  grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6  animate-fade-in`}>
+                <div 
+                    ref={skillsContainerRef}
+                    className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6"
+                >
                     {(activeTab === 'technical' ? technicalSkills : tools).map((item, index) => (
                         <div
-                            key={index}
-                            className="flex flex-col items-center justify-center rounded-xl bg-white/10 backdrop-blur-md p-4 border border-white/20 shadow-xl transform transition-transform duration-500 hover:rotate-x-6 hover:rotate-y-3 hover:scale-105"
+                            key={`${item.name}-${index}`}
+                            className={`
+                                flex flex-col items-center justify-center 
+                                rounded-xl bg-white/10 backdrop-blur-md p-4 
+                                border border-white/20 shadow-xl 
+                                transform transition-all duration-700 ease-out
+                                hover:rotate-x-6 hover:rotate-y-3 hover:scale-105
+                                ${isVisible ? 'translate-x-0 translate-y-0 opacity-100' : getAnimationDirection(index)}
+                            `}
                             style={{
                                 transformStyle: 'preserve-3d',
                                 perspective: '1000px',
                                 backfaceVisibility: 'hidden',
+                                transitionDelay: getAnimationDelay(index),
                             }}
                         >
                             <div className="relative w-32 h-32">
@@ -86,7 +156,7 @@ const Skills = ({ darkMode }) => {
                                     width="128"
                                     height="128"
                                     viewBox="0 0 128 128"
-                                    className="filter drop-shadow-lg transition-all duration-300"
+                                    className="filter drop-shadow-lg transition-all duration-500"
                                     style={{
                                         transform: `translateZ(20px)`,
                                     }}
@@ -110,6 +180,11 @@ const Skills = ({ darkMode }) => {
                                         stroke={item.color || '#3B82F6'}
                                         strokeWidth="2"
                                         filter="url(#glow)"
+                                        className="transition-all duration-700"
+                                        style={{
+                                            transformOrigin: 'center',
+                                            animation: isVisible ? 'spin 20s linear infinite' : 'none',
+                                        }}
                                     />
                                 </svg>
                                 <div
@@ -122,6 +197,9 @@ const Skills = ({ darkMode }) => {
                                         src={item.icon}
                                         alt={item.name}
                                         className="w-16 h-16 hover:animate-pulse duration-300 transform hover:scale-110 hover:rotate-12 transition-all"
+                                        style={{
+                                            filter: darkMode ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))' : 'drop-shadow(0 0 5px rgba(59, 130, 246, 0.3))'
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -138,8 +216,20 @@ const Skills = ({ darkMode }) => {
                     ))}
                 </div>
             </div>
+            
+            {/* Add global keyframes for animations */}
+            <style jsx global>{`
+                @keyframes spin {
+                    from {
+                        transform: rotate(0deg);
+                    }
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+            `}</style>
         </div>
     );
 }
 
-export default Skills
+export default Skills;
