@@ -1,24 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { technicalSkills, tools } from '../constants/skills';
-
+import { createPentagonPath } from '../helpers/polygon';
+import { getAnimationDirection, getAnimationDelay } from '../helpers/animation';
 const Skills = ({ darkMode }) => {
     const [activeTab, setActiveTab] = useState('technical');
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [isVisible, setIsVisible] = useState(false);
     const skillsContainerRef = useRef(null);
     
-    // Pentagon SVG path generator
-    const createPentagonPath = (size) => {
-        const radius = size / 2;
-        const points = [];
-        for (let i = 0; i < 5; i++) {
-            const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2; // Start from the top
-            const x = radius + radius * Math.cos(angle);
-            const y = radius + radius * Math.sin(angle);
-            points.push(`${x},${y}`);
-        }
-        return `M${points.join(' L')} Z`;
-    };
 
     // Use effect for 3D perspective hover
     useEffect(() => {
@@ -55,23 +44,7 @@ const Skills = ({ darkMode }) => {
         };
     }, [activeTab]);
 
-    // Function to determine entrance direction based on index
-    const getAnimationDirection = (index) => {
-        // Create a pattern of directions based on position in the grid
-        const position = index % 4;
-        switch (position) {
-            case 0: return 'translate-x-full opacity-0'; // From right
-            case 1: return '-translate-y-full opacity-0'; // From top
-            case 2: return '-translate-x-full opacity-0'; // From left
-            case 3: return 'translate-y-full opacity-0';  // From bottom
-            default: return 'opacity-0';
-        }
-    };
 
-    // Calculate delay for staggered animation
-    const getAnimationDelay = (index) => {
-        return `${100 + (index * 75)}ms`;
-    };
 
     return (
         <div className={`py-20 ${darkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black' : 'bg-gradient-to-br from-white via-blue-50 to-white'} backdrop-blur-md`}>
