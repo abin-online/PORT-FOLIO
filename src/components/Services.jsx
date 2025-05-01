@@ -5,6 +5,7 @@ import {
     Server,
     CloudUpload,
   } from 'lucide-react';
+import { Link } from 'react-router-dom';
   
   const Services = ({ darkMode }) => {
     const services = [
@@ -116,8 +117,8 @@ import {
             >
               Need a custom service?
             </h3>
-            <a
-              href="/contact"
+            <Link
+              to="/contact"
               className={`inline-flex items-center px-6 py-3 rounded-full font-semibold shadow-md transition-all transform hover:scale-105 
                 ${
                   darkMode
@@ -126,7 +127,7 @@ import {
                 }`}
             >
               Get in Touch
-            </a>
+            </Link>
           </div>
         </div>
       </div>
