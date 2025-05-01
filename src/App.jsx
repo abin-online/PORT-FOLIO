@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Sun, Moon, Menu, X } from 'lucide-react';
 
 // Import components
@@ -124,7 +124,7 @@ function App() {
           <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'} ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.path}
                   href={item.path}
                   className={`block px-3 py-2 rounded-md text-base font-medium ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
@@ -140,7 +140,7 @@ function App() {
                   }}
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
