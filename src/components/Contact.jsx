@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { socialLinks, contactInfo } from '../constants/contact';
+import emailjs from 'emailjs-com';
+
 const Contact = ({ darkMode }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -21,38 +23,58 @@ const Contact = ({ darkMode }) => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
-    try {
-      // This is where you would add your actual form submission logic
-      // For example, using fetch or axios to send the data to your backend
-      
-      // Simulating API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+    // Check if all fields are filled
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       setSubmitStatus({
-        success: true,
-        message: 'Your message has been sent! I will get back to you soon.'
+        success: false,
+        message: 'Please fill in all fields before submitting.',
       });
-      
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-      
-      // Clear success message after 5 seconds
-      setTimeout(() => {
-        setSubmitStatus(null);
-      }, 5000);
-      
+      return;
+    }
+    
+    setIsSubmitting(true);
+  
+    try {
+      const templateParams = {
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+      };
+  
+      const response = await emailjs.send(
+        'service_wbuyejx',
+        'template_482eubf',
+        templateParams,
+        'jMPJ9oFs7bfhkpJ1R'
+      );
+  
+      if (response.status === 200) {
+        setSubmitStatus({
+          success: true,
+          message: 'Your message has been sent! I will get back to you soon.',
+        });
+  
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+        });
+  
+        setTimeout(() => {
+          setSubmitStatus(null);
+        }, 5000);
+      } else {
+        throw new Error('Something went wrong with the email submission.');
+      }
     } catch (error) {
       setSubmitStatus({
         success: false,
-        message: 'Something went wrong. Please try again later.'
+        message: 'Something went wrong. Please try again later.',
       });
+      console.error('Email submission error:', error);  // For debugging
     } finally {
       setIsSubmitting(false);
     }
