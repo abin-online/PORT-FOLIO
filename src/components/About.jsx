@@ -40,7 +40,7 @@ const About = ({ darkMode }) => {
                                 alt="Abin Babu"
                                 className="object-cover w-full h-full "
                             />
-                        </div>http://localhost:5173/contact
+                        </div>
                     </motion.div>
 
                     {/* About Content */}
