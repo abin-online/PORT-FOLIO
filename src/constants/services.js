@@ -1,3 +1,5 @@
+import { Code, Database, ShieldCheck, Server, CloudUpload } from "lucide-react";
+
 export const services = [
     {
       icon: <Code size={40} />,
