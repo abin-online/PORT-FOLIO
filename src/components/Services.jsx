@@ -62,7 +62,7 @@ import { services } from '../constants/services';
                       : 'bg-blue-100 text-blue-600 group-hover:bg-blue-200'
                   }`}
                 >
-                  {service.icon}
+                  {service.icon()}
                 </div>
                 <h3
                   className={`text-xl font-bold mb-2 ${
