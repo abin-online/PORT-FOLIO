@@ -90,11 +90,12 @@ const Contact = ({ darkMode }) => {
       };
   
       const response = await emailjs.send(
-        'service_wbuyejx',
-        'template_482eubf',
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         templateParams,
-        'jMPJ9oFs7bfhkpJ1R'
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
+      
   
       if (response.status === 200) {
         setSubmitStatus({

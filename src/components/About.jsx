@@ -91,7 +91,7 @@ const About = ({ darkMode }) => {
                         {/* Buttons */}
                         <div className="mt-8">
                             <a
-                                href="ABIN_BABU.pdf"
+                                href="https://wa.me/919061625083"
                                 className={`inline-flex items-center px-6 py-3 rounded-full font-medium transition-all transform hover:scale-105 shadow 
                                     ${darkMode ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
                             >
