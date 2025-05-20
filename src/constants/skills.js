@@ -1,7 +1,7 @@
 export const technicalSkills = [
     { name: 'JavaScript', icon: 'https://static.vecteezy.com/system/resources/previews/027/127/463/original/javascript-logo-javascript-icon-transparent-free-png.png', color: '#F7DF1E' },
     { name: 'TypeScript', icon: 'https://icons.veryicon.com/png/o/business/vscode-program-item-icon/typescript-def.png', color: '#3178C6' },
-    { name: 'React.js', icon: 'https://logospng.org/download/react/logo-react-512.png', color: '#61DAFB' },
+    { name: 'React.js', icon: 'https://www.pngall.com/wp-content/uploads/15/React-Logo-PNG-Images.png', color: '#61DAFB' },
     { name: 'Next.js', icon: 'https://creazilla-store.fra1.digitaloceanspaces.com/icons/3244252/nextjs-icon-md.png', color: '#000000' },
     { name: 'Node.js', icon: 'https://cdn.freebiesupply.com/logos/large/2x/nodejs-icon-logo-png-transparent.png', color: '#339933' },
     { name: 'NestJS', icon: 'https://vectorseek.com/wp-content/uploads/2023/09/NestJS-Logo-Vector.svg-.png', color: '#E0234E' },
