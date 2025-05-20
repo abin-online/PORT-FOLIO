@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Sun, Moon, Menu, X, ChevronDown } from 'lucide-react';
 
 const Navbar = ({ darkMode, toggleDarkMode, navItems }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
   
   // Handle scroll events for navbar appearance changes
   useEffect(() => {
@@ -52,6 +53,11 @@ const Navbar = ({ darkMode, toggleDarkMode, navItems }) => {
     };
   }, [isMenuOpen]);
   
+  // Handle scroll to top when navigating
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [location.pathname]);
+  
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -60,39 +66,39 @@ const Navbar = ({ darkMode, toggleDarkMode, navItems }) => {
     setIsMenuOpen(false);
   };
   
-  const scrollToTop = (e, path) => {
-    if (window.location.pathname === path) {
+  const handleNavClick = (e, path) => {
+    if (location.pathname === path) {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      closeMenu();
     }
+    closeMenu();
   };
 
   return (
     <nav 
-      className={`fixed w-full z-50 transition-all duration-300 ${
+      className={`fixed w-full z-50 transition-all duration-500 ease-in-out ${
         isScrolled 
-          ? `h-20 ${darkMode ? 'bg-gray-800/95 backdrop-blur-sm' : 'bg-white/95 backdrop-blur-sm'} shadow-lg`
-          : `h-28 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-md`
+          ? `h-16 ${darkMode ? 'bg-gray-800/95 backdrop-blur-md' : 'bg-white/95 backdrop-blur-md'} shadow-lg`
+          : `h-24 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-sm`
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-        <div className={`flex justify-between items-center h-full transition-all duration-300`}>
+        <div className="flex justify-between items-center h-full">
           {/* Logo */}
           <div className="flex items-center">
             <Link 
               to="/" 
-              className={`text-2xl md:text-3xl font-bold transition-all duration-300 hover:scale-105 ${
+              className={`text-2xl md:text-3xl font-bold transition-all duration-300 transform hover:scale-105 ${
                 darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'
               }`}
-              onClick={(e) => scrollToTop(e, "/")}
+              onClick={(e) => handleNavClick(e, "/")}
             >
               <span className="flex items-center">
                 Abin Babu
-                <span className={`ml-1 transition-all duration-300 ${
+                <span className={`ml-1 transition-all duration-500 ${
                   darkMode ? 'text-gray-300' : 'text-gray-500'
                 }`}>
-                  <ChevronDown size={16} className={`transform transition-transform duration-300 ${
+                  <ChevronDown size={16} className={`transform transition-transform duration-500 ease-in-out ${
                     isScrolled ? 'rotate-180' : 'rotate-0'
                   }`} />
                 </span>
@@ -100,50 +106,52 @@ const Navbar = ({ darkMode, toggleDarkMode, navItems }) => {
             </Link>
           </div>
 
-          {/* Desktop Nav */}
+          {/* Desktop Nav - with improved transitions */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`relative font-medium transition-all duration-300 hover:text-blue-500 group ${
-                  darkMode ? 'text-gray-200' : 'text-gray-700'
-                }`}
-                onClick={(e) => scrollToTop(e, item.path)}
+                className={`relative font-medium transition-all duration-300 ${
+                  location.pathname === item.path ? 
+                    (darkMode ? 'text-blue-400' : 'text-blue-600') : 
+                    (darkMode ? 'text-gray-200' : 'text-gray-700')
+                } hover:text-blue-500 group`}
+                onClick={(e) => handleNavClick(e, item.path)}
               >
                 {item.label}
-                <span className={`absolute -bottom-2 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${
-                  darkMode ? 'bg-blue-400' : 'bg-blue-600'
-                }`}></span>
+                <span className={`absolute -bottom-2 left-0 h-0.5 transition-all duration-300 ${
+                  location.pathname === item.path ? 'w-full' : 'w-0'
+                } ${darkMode ? 'bg-blue-400' : 'bg-blue-600'} group-hover:w-full`}></span>
               </Link>
             ))}
             
-            {/* Dark Mode Toggle */}
+            {/* Dark Mode Toggle - with smoother transitions */}
             <button
               onClick={toggleDarkMode}
-              className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${
+              className={`p-2 rounded-full transition-all duration-500 transform hover:scale-110 ${
                 darkMode 
-                  ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600' 
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600 rotate-0' 
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 rotate-180'
               }`}
               aria-label="Toggle dark mode"
             >
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+              {darkMode ? <Sun size={20} className="transition-all duration-500" /> : <Moon size={20} className="transition-all duration-500" />}
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - with improved transitions */}
           <div className="flex items-center md:hidden">
             <button
               onClick={toggleDarkMode}
-              className={`p-2 mr-3 rounded-full transition-all duration-300 transform active:scale-95 ${
+              className={`p-2 mr-3 rounded-full transition-all duration-500 transform active:scale-95 ${
                 darkMode 
-                  ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600' 
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600 rotate-0' 
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 rotate-180'
               }`}
               aria-label="Toggle dark mode"
             >
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+              {darkMode ? <Sun size={20} className="transition-all duration-500" /> : <Moon size={20} className="transition-all duration-500" />}
             </button>
             
             <button
@@ -154,26 +162,39 @@ const Navbar = ({ darkMode, toggleDarkMode, navItems }) => {
               }`}
               aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              <div className="relative w-6 h-6">
+                <X 
+                  size={24} 
+                  className={`absolute inset-0 transition-all duration-300 transform ${
+                    isMenuOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-90 scale-75'
+                  }`} 
+                />
+                <Menu 
+                  size={24} 
+                  className={`absolute inset-0 transition-all duration-300 transform ${
+                    isMenuOpen ? 'opacity-0 rotate-90 scale-75' : 'opacity-100 rotate-0 scale-100'
+                  }`} 
+                />
+              </div>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu - Overlay style */}
+      {/* Mobile Menu - Improved overlay with better animations */}
       <div 
         id="mobile-menu-container"
-        className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 bg-black transition-all duration-500 ease-in-out md:hidden ${
           isMenuOpen 
-            ? 'opacity-100 pointer-events-auto' 
-            : 'opacity-0 pointer-events-none'
+            ? 'bg-opacity-50 pointer-events-auto' 
+            : 'bg-opacity-0 pointer-events-none'
         }`}
-        style={{ top: isScrolled ? '80px' : '112px' }}
+        style={{ top: isScrolled ? '64px' : '96px' }}
       >
         <div 
           className={`w-full sm:w-80 h-screen ${
             darkMode ? 'bg-gray-900' : 'bg-white'
-          } shadow-2xl transform transition-transform duration-300 ease-in-out ${
+          } shadow-2xl transform transition-all duration-500 ease-in-out ${
             isMenuOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
@@ -182,19 +203,19 @@ const Navbar = ({ darkMode, toggleDarkMode, navItems }) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`block py-3 px-4 text-lg font-medium rounded-lg transition-all duration-300 ${
-                  darkMode 
-                    ? 'text-gray-200 hover:bg-gray-800 hover:text-blue-400' 
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
+                className={`block py-3 px-4 text-lg font-medium rounded-lg transition-all duration-500 ${
+                  location.pathname === item.path ?
+                    (darkMode ? 'bg-gray-800 text-blue-400' : 'bg-gray-100 text-blue-600') :
+                    (darkMode ? 'text-gray-200 hover:bg-gray-800 hover:text-blue-400' : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600')
                 }`}
                 style={{ 
-                  transitionDelay: isMenuOpen ? `${index * 50}ms` : '0ms',
+                  transitionDelay: isMenuOpen ? `${index * 75}ms` : '0ms',
                   transform: isMenuOpen ? 'translateX(0)' : 'translateX(-20px)',
                   opacity: isMenuOpen ? 1 : 0
                 }}
-                onClick={(e) => scrollToTop(e, item.path)}
+                onClick={(e) => handleNavClick(e, item.path)}
               >
-                {item.label}
+                {item.label} 
               </Link>
             ))}
           </div>
@@ -202,8 +223,8 @@ const Navbar = ({ darkMode, toggleDarkMode, navItems }) => {
           <div 
             className={`absolute bottom-0 left-0 right-0 p-6 ${
               darkMode ? 'text-gray-400' : 'text-gray-500'
-            } text-center text-sm transition-all duration-500 ${
-              isMenuOpen ? 'opacity-100' : 'opacity-0'
+            } text-center text-sm transition-all duration-700 ${
+              isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
           >
             <p>&copy; {new Date().getFullYear()} Abin Babu</p>

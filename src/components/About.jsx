@@ -30,9 +30,9 @@ const About = ({ darkMode }) => {
                     {/* Profile Image */}
                     <motion.div
                         className="lg:w-1/3 mb-8 lg:mb-0"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5 }}
+                        initial={{ opacity: 0, scale: 1. }}
+                        animate={{ opacity: 1, scale: 1.01 }}
+                        transition={{ duration: 2 }}
                     >
                         <div className={`rounded-xl overflow-hidden border-2 ${borderColor} shadow-xl transform hover:scale-105 transition-all`}>
                             <img
